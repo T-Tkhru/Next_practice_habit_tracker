@@ -14,6 +14,20 @@ function writeDB(filePath: string, data: unknown) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 }
 
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const habitId = parseInt(id)
+  const body = await request.json()
+
+  const habits = readDB(HABITS_PATH)
+  const updated = habits.map((h: { id: number }) =>
+    h.id === habitId ? { ...h, ...body } : h
+  )
+  writeDB(HABITS_PATH, updated)
+
+  return NextResponse.json(updated.find((h: { id: number }) => h.id === habitId))
+}
+
 export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const habitId = parseInt(id)

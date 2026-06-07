@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "30分読書", "emoji": "📚", "createdAt": "2024-06-01" },
+  { "id": 2, "name": "運動する", "emoji": "🏃", "createdAt": "2024-06-01" },
+  { "id": 3, "name": "瞑想", "emoji": "🧘", "createdAt": "2024-06-01" }
+]

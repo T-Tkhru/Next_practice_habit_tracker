@@ -1,8 +1,11 @@
 'use client'
 
-// TODO 1: habit（習慣データ）・isDone（達成済みか）・onCheck（チェック時に呼ぶ関数）をpropsで受け取る
-// TODO 2: shadcn/ui の Card と Checkbox を使ってカードを作る
-// TODO 3: isDone が true/false のときで見た目を変える（例: 取り消し線、背景色）
+// TODO 1: habit・isDone・streak・onCheck をpropsで受け取る（型定義も自分で書く）
+// TODO 2: shadcn/ui の Card を使ってカードを作る
+// TODO 3: 左側にチェックサークルを表示する（isDone のとき背景色・アイコンを変える）
+// TODO 4: 絵文字・習慣名・streak（連続日数）を表示する
+// TODO 5: isDone のとき習慣名に取り消し線をつけ、文字色を薄くする
+// TODO 6: カード全体クリック or チェックサークルクリックで onCheck を呼ぶ
 
 export default function HabitCard() {
   return <div />
