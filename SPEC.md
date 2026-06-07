@@ -114,7 +114,15 @@
 **実装上のポイント**
 
 - このページは **Server Component** として実装する（`'use client'` を書かない）
-- データの取得はサーバーサイドで `fetch` を使って行う
+- データの取得は `fs.readFileSync` でJSONファイルを直接読む（開発環境では自サーバーへの `fetch` が動作しないため）
+
+```ts
+import fs from 'fs'
+import path from 'path'
+
+const habits = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'db/habits.json'), 'utf-8'))
+const records = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'db/records.json'), 'utf-8'))
+```
 
 **使用するAPI**
 
@@ -210,5 +218,9 @@ calcStreak(habitId: number, records: HabitRecord[]): number
 1. `components/Sidebar.tsx` — ナビゲーションを作る
 2. `app/habits/page.tsx` — 習慣の追加・削除・編集を実装する
 3. `app/page.tsx` — 習慣一覧の表示・チェックON/OFF・statsカードを実装する（この時点ではdivで表示してよい）
+   - TODO 1〜3: state定義・データ取得・今日の達成判定（基盤作り）
+   - TODO 4〜5: 一覧表示・チェックトグル（インタラクション）
+   - TODO 6〜7: streak計算・statsカード（集計表示）
+   - TODO 8: HabitCardへの差し替え（コンポーネント化）
 4. `components/HabitCard.tsx` — page.tsx のカード部分をコンポーネントに切り出す
 5. `app/history/page.tsx` — 過去4週間グリッドを実装する
