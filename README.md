@@ -15,6 +15,7 @@
 - [ ] `db/habits.example.json` を `db/habits.json` にコピーする
 - [ ] `db/records.example.json` を `db/records.json` にコピーする
 - [ ] `npm run dev` で起動し、画面が表示されることを確認する
+- [ ] `habit_tracker_mock.html` をブラウザで開き、完成イメージを確認する
 
 ---
 
