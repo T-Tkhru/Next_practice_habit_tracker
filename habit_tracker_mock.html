@@ -1,0 +1,200 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.app { display: flex; height: 560px; background: var(--color-background-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; border: 0.5px solid var(--color-border-tertiary); }
+.sidebar { width: 200px; background: var(--color-background-primary); border-right: 0.5px solid var(--color-border-tertiary); padding: 1.25rem 0; display: flex; flex-direction: column; }
+.sidebar-logo { padding: 0 1.25rem 1.25rem; font-size: 15px; font-weight: 500; color: var(--color-text-primary); border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 0.75rem; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 1.25rem; font-size: 14px; color: var(--color-text-secondary); cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; }
+.nav-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.nav-item.active { color: #534AB7; border-left-color: #534AB7; background: #EEEDFE; }
+.nav-item i { font-size: 16px; }
+.main { flex: 1; overflow-y: auto; padding: 1.5rem; }
+.page { display: none; }
+.page.active { display: block; }
+.page-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1.25rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+.stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+.stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.habit-list { display: flex; flex-direction: column; gap: 8px; }
+.habit-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.15s; }
+.habit-card:hover { border-color: var(--color-border-secondary); }
+.habit-check { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+.habit-check.done { background: #534AB7; border-color: #534AB7; color: white; }
+.habit-info { flex: 1; }
+.habit-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.habit-name.done { color: var(--color-text-tertiary); text-decoration: line-through; }
+.habit-streak { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.habit-emoji { font-size: 20px; }
+.add-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: #534AB7; color: white; border: none; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 1rem; }
+.manage-list { display: flex; flex-direction: column; gap: 8px; }
+.manage-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 12px; }
+.manage-actions { display: flex; gap: 8px; margin-left: auto; }
+.icon-btn { width: 30px; height: 30px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text-secondary); font-size: 14px; }
+.icon-btn:hover { color: var(--color-text-primary); border-color: var(--color-border-secondary); }
+.icon-btn.danger:hover { color: #A32D2D; border-color: #F7C1C1; background: #FCEBEB; }
+.history-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 1rem; }
+.day-label { font-size: 11px; color: var(--color-text-tertiary); text-align: center; padding: 2px 0; }
+.day-cell { aspect-ratio: 1; border-radius: 4px; background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-text-tertiary); }
+.day-cell.has-data { background: #AFA9EC; color: #3C3489; font-weight: 500; }
+.day-cell.full { background: #534AB7; color: white; font-weight: 500; }
+.section-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 8px; }
+.modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius-lg); }
+.modal { background: var(--color-background-primary); border-radius: var(--border-radius-lg); padding: 1.5rem; width: 280px; border: 0.5px solid var(--color-border-tertiary); }
+.modal-title { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+.form-group { margin-bottom: 12px; }
+.form-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; display: block; }
+.form-input { width: 100%; padding: 8px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 13px; background: var(--color-background-primary); color: var(--color-text-primary); }
+.modal-actions { display: flex; gap: 8px; margin-top: 1rem; justify-content: flex-end; }
+.btn-cancel { padding: 7px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); }
+.btn-submit { padding: 7px 14px; background: #534AB7; color: white; border: none; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; }
+</style>
+
+<div style="position: relative;">
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo"><i class="ti ti-checkbox" aria-hidden="true"></i> HabitLog</div>
+    <div class="nav-item active" onclick="showPage('today')"><i class="ti ti-sun"></i> 今日</div>
+    <div class="nav-item" onclick="showPage('habits')"><i class="ti ti-list-check"></i> 習慣管理</div>
+    <div class="nav-item" onclick="showPage('history')"><i class="ti ti-calendar"></i> 履歴</div>
+  </div>
+  <div class="main">
+    <div id="page-today" class="page active">
+      <div class="page-title">今日の習慣</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">達成</div><div class="stat-value" id="done-count">0 / 5</div></div>
+        <div class="stat-card"><div class="stat-label">達成率</div><div class="stat-value" id="done-pct">0%</div></div>
+        <div class="stat-card"><div class="stat-label">連続日数</div><div class="stat-value">12日</div></div>
+      </div>
+      <div class="habit-list" id="habit-list"></div>
+    </div>
+
+    <div id="page-habits" class="page">
+      <div class="page-title">習慣管理</div>
+      <button class="add-btn" onclick="showModal()"><i class="ti ti-plus" aria-hidden="true"></i> 習慣を追加</button>
+      <div class="manage-list" id="manage-list"></div>
+    </div>
+
+    <div id="page-history" class="page">
+      <div class="page-title">達成履歴</div>
+      <div class="section-label">過去4週間</div>
+      <div class="history-grid" id="history-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal" style="display:none;">
+  <div class="modal">
+    <div class="modal-title">習慣を追加</div>
+    <div class="form-group">
+      <label class="form-label">習慣名</label>
+      <input class="form-input" id="habit-name-input" placeholder="例：30分読書" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">アイコン</label>
+      <input class="form-input" id="habit-emoji-input" placeholder="例：📚" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="hideModal()">キャンセル</button>
+      <button class="btn-submit" onclick="addHabit()">追加する</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const habits = [
+  { id: 1, name: '30分読書', emoji: '📚', streak: 7 },
+  { id: 2, name: '運動する', emoji: '🏃', streak: 3 },
+  { id: 3, name: '瞑想', emoji: '🧘', streak: 12 },
+  { id: 4, name: '早起き', emoji: '🌅', streak: 5 },
+  { id: 5, name: '日記を書く', emoji: '✏️', streak: 2 },
+];
+const done = new Set();
+
+function renderHabits() {
+  const list = document.getElementById('habit-list');
+  list.innerHTML = habits.map(h => `
+    <div class="habit-card" onclick="toggleHabit(${h.id})">
+      <div class="habit-check ${done.has(h.id) ? 'done' : ''}">${done.has(h.id) ? '<i class="ti ti-check" style="font-size:13px"></i>' : ''}</div>
+      <span class="habit-emoji">${h.emoji}</span>
+      <div class="habit-info">
+        <div class="habit-name ${done.has(h.id) ? 'done' : ''}">${h.name}</div>
+        <div class="habit-streak"><i class="ti ti-flame" aria-hidden="true" style="font-size:12px"></i> ${h.streak}日連続</div>
+      </div>
+    </div>
+  `).join('');
+  const doneCount = done.size;
+  document.getElementById('done-count').textContent = `${doneCount} / ${habits.length}`;
+  document.getElementById('done-pct').textContent = `${Math.round(doneCount / habits.length * 100)}%`;
+}
+
+function renderManage() {
+  const list = document.getElementById('manage-list');
+  list.innerHTML = habits.map(h => `
+    <div class="manage-card">
+      <span style="font-size:20px">${h.emoji}</span>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--color-text-primary)">${h.name}</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">${h.streak}日連続</div>
+      </div>
+      <div class="manage-actions">
+        <div class="icon-btn"><i class="ti ti-edit"></i></div>
+        <div class="icon-btn danger" onclick="deleteHabit(${h.id})"><i class="ti ti-trash"></i></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderHistory() {
+  const grid = document.getElementById('history-grid');
+  const days = ['日','月','火','水','木','金','土'];
+  let html = days.map(d => `<div class="day-label">${d}</div>`).join('');
+  for (let i = 0; i < 28; i++) {
+    const r = Math.random();
+    const cls = r > 0.7 ? 'full' : r > 0.4 ? 'has-data' : '';
+    const num = i + 1;
+    html += `<div class="day-cell ${cls}">${num}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function toggleHabit(id) {
+  if (done.has(id)) done.delete(id); else done.add(id);
+  renderHabits();
+}
+
+function deleteHabit(id) {
+  const idx = habits.findIndex(h => h.id === id);
+  if (idx !== -1) habits.splice(idx, 1);
+  renderManage();
+  renderHabits();
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name === 'habits') renderManage();
+  if (name === 'history') renderHistory();
+}
+
+function showModal() { document.getElementById('modal').style.display = 'flex'; }
+function hideModal() { document.getElementById('modal').style.display = 'none'; }
+
+function addHabit() {
+  const name = document.getElementById('habit-name-input').value.trim();
+  const emoji = document.getElementById('habit-emoji-input').value.trim() || '⭐';
+  if (!name) return;
+  habits.push({ id: Date.now(), name, emoji, streak: 0 });
+  hideModal();
+  renderManage();
+  renderHabits();
+  document.getElementById('habit-name-input').value = '';
+  document.getElementById('habit-emoji-input').value = '';
+}
+
+renderHabits();
+</script>
